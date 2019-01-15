@@ -1,0 +1,22 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: docker:17.10.0-ce-git
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run: echo "A first hello"
+      - run: 
+          name: docker build
+          no_output_timeout: 60m
+          command: |
+            docker build -t djarecka/nimare:$CIRCLE_BRANCH .
+      - run:
+          name: docker run
+          no_output_timeout: 60m
+          command: |
+            docker run -it --rm djarecka/nimare:$CIRCLE_BRANCH python -c "print('HELLO')"
+          
+
